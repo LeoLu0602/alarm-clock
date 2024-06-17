@@ -5,8 +5,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Alarm Clock',
-  description: 'Alarm clock',
+  title: 'MP3 Alarm Clock',
+  description: '',
 };
 
 export default function RootLayout({

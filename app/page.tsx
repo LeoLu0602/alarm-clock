@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, ChangeEvent } from 'react';
+import Number from '@/components/Number';
 
 interface Clock {
   h: number;
@@ -19,7 +20,7 @@ interface Alarm extends Clock {
 }
 
 export default function Page() {
-  const [clock, setClock] = useState<Clock>({ h: 18, m: 17 });
+  const [clock, setClock] = useState<Clock>({ h: 12, m: 0 });
   const [ringtone, setRingtone] = useState<Ringtone | null>(null);
   const [alarms, setAlarms] = useState<Alarm[]>([]);
 
@@ -74,19 +75,62 @@ export default function Page() {
     audio.play();
   }
 
+  function increment(option: 'h' | 'm'): void {
+    const bound: number = option === 'h' ? 23 : 59;
+
+    if (option === 'h' && clock.h + 1 <= bound) {
+      setClock({ ...clock, h: clock.h + 1 });
+    } else if (option === 'm' && clock.m + 1 <= bound) {
+      setClock({ ...clock, m: clock.m + 1 });
+    }
+  }
+
+  function decrement(option: 'h' | 'm'): void {
+    const bound: number = 0;
+
+    if (option === 'h' && clock.h - 1 >= bound) {
+      setClock({ ...clock, h: clock.h - 1 });
+    } else if (option === 'm' && clock.m - 1 >= bound) {
+      setClock({ ...clock, m: clock.m - 1 });
+    }
+  }
+
   return (
     <>
       <main>
         <h1>Alarm Clock</h1>
 
-        <section></section>
-
         <section>
-          <h2>Ringtone: </h2>
-          <input type="file" onChange={upload} />
+          <section className="flex">
+            <Number
+              num={clock.h}
+              increment={() => {
+                increment('h');
+              }}
+              decrement={() => {
+                decrement('h');
+              }}
+            />
+            <Number
+              num={clock.m}
+              increment={() => {
+                increment('m');
+              }}
+              decrement={() => {
+                decrement('m');
+              }}
+            />
+          </section>
+
+          <section>
+            <h2>Ringtone: </h2>
+            <input type="file" onChange={upload} />
+          </section>
+
+          <button onClick={save}>Save</button>
         </section>
 
-        <button onClick={save}>Save</button>
+        <section></section>
       </main>
     </>
   );
