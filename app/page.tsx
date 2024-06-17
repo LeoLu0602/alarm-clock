@@ -20,7 +20,11 @@ interface Alarm extends Clock {
 }
 
 export default function Page() {
-  const [clock, setClock] = useState<Clock>({ h: 12, m: 0 });
+  const now = new Date();
+  const [clock, setClock] = useState<Clock>({
+    h: now.getHours(),
+    m: now.getMinutes(),
+  });
   const [ringtone, setRingtone] = useState<Ringtone | null>(null);
   const [alarms, setAlarms] = useState<Alarm[]>([]);
 
@@ -130,7 +134,16 @@ export default function Page() {
           <button onClick={save}>Save</button>
         </section>
 
-        <section></section>
+        <section>
+          {alarms.map((alarm, i) => (
+            <section key={i}>
+              <h3>
+                {alarm.h} : {alarm.m}
+              </h3>
+              <h4>{alarm.ringtone}</h4>
+            </section>
+          ))}
+        </section>
       </main>
     </>
   );
