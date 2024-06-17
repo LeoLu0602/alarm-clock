@@ -7,46 +7,71 @@ interface Clock {
   m: number;
 }
 
+interface Ringtone {
+  audio: HTMLAudioElement;
+  title: string;
+}
+
+interface Alarm extends Clock {
+  ringtone: string;
+  timeoutID: number;
+  isActive: boolean;
+}
+
 export default function Page() {
-  const [clock, setClock] = useState<Clock>({ h: 16, m: 44 });
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const [clock, setClock] = useState<Clock>({ h: 18, m: 17 });
+  const [ringtone, setRingtone] = useState<Ringtone | null>(null);
+  const [alarms, setAlarms] = useState<Alarm[]>([]);
 
   function upload(e: ChangeEvent<HTMLInputElement>): void {
     if (e.target.files) {
-      const objUrl: string = URL.createObjectURL(e.target.files[0]);
-      const newAudio: HTMLAudioElement = new Audio(objUrl);
+      const file: File = e.target.files[0];
+      const objUrl: string = URL.createObjectURL(file);
+      const audio: HTMLAudioElement = new Audio(objUrl);
 
-      setAudio(newAudio);
+      setRingtone({ audio, title: file.name });
     }
   }
 
   function save(): void {
-    if (!audio) {
+    if (!ringtone) {
       alert("No ringtone. Can't save.");
       return;
     }
 
+    const delay: number = calculateDelay(clock.h, clock.m);
+    const timeoutID: number = window.setTimeout(() => {
+      goOff(ringtone.audio);
+    }, delay);
+
+    setAlarms([
+      ...alarms,
+      {
+        h: clock.h,
+        m: clock.m,
+        ringtone: ringtone.title,
+        timeoutID,
+        isActive: true,
+      },
+    ]);
+  }
+
+  function calculateDelay(h: number, m: number): number {
     const now: Date = new Date();
     const target: Date = new Date(
       now.getFullYear(),
       now.getMonth(),
       now.getDate(),
-      clock.h,
-      clock.m
+      h,
+      m
     );
-    let delay: number = target.valueOf() - now.valueOf();
+    const delay: number = target.valueOf() - now.valueOf();
 
-    if (delay < 0) {
-      delay += 86400 * 1000;
-    }
-
-    setTimeout(goOff, delay);
+    return delay < 0 ? delay + 86400 * 1000 : delay;
   }
 
-  function goOff(): void {
-    if (audio) {
-      audio.play();
-    }
+  function goOff(audio: HTMLAudioElement): void {
+    audio.play();
   }
 
   return (
