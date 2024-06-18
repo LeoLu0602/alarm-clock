@@ -10,10 +10,24 @@ export default function Number({
   decrement: () => void;
 }) {
   return (
-    <section>
-      <button onClick={increment}>+</button>
+    <section className='flex w-20 flex-col items-center'>
+      <button
+        className='w-full'
+        onClick={() => {
+          increment();
+        }}
+      >
+        +
+      </button>
       <div>{num.toString().padStart(2, '0')}</div>
-      <button onClick={decrement}>-</button>
+      <button
+        className='w-full'
+        onClick={() => {
+          decrement();
+        }}
+      >
+        -
+      </button>
     </section>
   );
 }

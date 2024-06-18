@@ -21,10 +21,8 @@ interface Alarm extends Clock {
 
 export default function Page() {
   const now = new Date();
-  const [clock, setClock] = useState<Clock>({
-    h: now.getHours(),
-    m: now.getMinutes(),
-  });
+  const [h, setH] = useState<number>(now.getHours());
+  const [m, setM] = useState<number>(now.getMinutes());
   const [ringtone, setRingtone] = useState<Ringtone | null>(null);
   const [alarms, setAlarms] = useState<Alarm[]>([]);
 
@@ -44,7 +42,7 @@ export default function Page() {
       return;
     }
 
-    const delay: number = calculateDelay(clock.h, clock.m);
+    const delay: number = calculateDelay(h, m);
     const timeoutID: number = window.setTimeout(() => {
       goOff(ringtone.audio);
     }, delay);
@@ -52,8 +50,8 @@ export default function Page() {
     setAlarms([
       ...alarms,
       {
-        h: clock.h,
-        m: clock.m,
+        h,
+        m,
         ringtone: ringtone.title,
         timeoutID,
         isActive: true,
@@ -80,34 +78,30 @@ export default function Page() {
   }
 
   function increment(option: 'h' | 'm'): void {
-    const bound: number = option === 'h' ? 23 : 59;
-
-    if (option === 'h' && clock.h + 1 <= bound) {
-      setClock({ ...clock, h: clock.h + 1 });
-    } else if (option === 'm' && clock.m + 1 <= bound) {
-      setClock({ ...clock, m: clock.m + 1 });
+    if (option === 'h') {
+      setH((oldVal) => (oldVal + 1) % 24);
+    } else if (option === 'm') {
+      setM((oldVal) => (oldVal + 1) % 60);
     }
   }
 
   function decrement(option: 'h' | 'm'): void {
-    const bound: number = 0;
-
-    if (option === 'h' && clock.h - 1 >= bound) {
-      setClock({ ...clock, h: clock.h - 1 });
-    } else if (option === 'm' && clock.m - 1 >= bound) {
-      setClock({ ...clock, m: clock.m - 1 });
+    if (option === 'h') {
+      setH((oldVal) => (oldVal - 1 + 24) % 24);
+    } else if (option === 'm') {
+      setM((oldVal) => (oldVal - 1 + 60) % 60);
     }
   }
 
   return (
     <>
-      <main>
-        <h1>Alarm Clock</h1>
+      <main className='absolute left-0 top-0 flex min-h-screen w-screen flex-col items-center'>
+        <h1 className='pb-8 pt-4 text-3xl font-bold'>MP3 Alarm Clock</h1>
 
-        <section>
-          <section className="flex">
+        <section className='flex w-screen flex-col items-center'>
+          <section className='flex text-3xl font-bold'>
             <Number
-              num={clock.h}
+              num={h}
               increment={() => {
                 increment('h');
               }}
@@ -116,7 +110,7 @@ export default function Page() {
               }}
             />
             <Number
-              num={clock.m}
+              num={m}
               increment={() => {
                 increment('m');
               }}
@@ -126,21 +120,33 @@ export default function Page() {
             />
           </section>
 
-          <section>
-            <h2>Ringtone: </h2>
-            <input type="file" onChange={upload} />
+          <section className='w-60 py-8'>
+            <label htmlFor='file'>Ringtone:</label>
+            <input
+              className='mt-2 w-full'
+              type='file'
+              name='file'
+              accept='audio/mp3'
+              onChange={upload}
+            />
           </section>
 
-          <button onClick={save}>Save</button>
+          <button
+            className='mb-8 rounded-lg bg-emerald-500 px-8 py-1 font-bold text-white'
+            onClick={save}
+          >
+            Save
+          </button>
         </section>
 
         <section>
           {alarms.map((alarm, i) => (
-            <section key={i}>
+            <section className='mt-4 flex w-32 justify-between' key={i}>
               <h3>
-                {alarm.h} : {alarm.m}
+                {alarm.h.toString().padStart(2, '0')}:
+                {alarm.m.toString().padStart(2, '0')}
               </h3>
-              <h4>{alarm.ringtone}</h4>
+              <span className='cursor-pointer text-red-500'>delete</span>
             </section>
           ))}
         </section>
