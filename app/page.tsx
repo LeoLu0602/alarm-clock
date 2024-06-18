@@ -36,8 +36,8 @@ export default function Page() {
       return;
     }
 
-    ringtone.pause();
     ringtone.play();
+    ringtone.pause();
 
     const delay: number = calculateDelay(h, m);
     const timeoutID: number = window.setTimeout(() => {
