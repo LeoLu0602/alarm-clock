@@ -36,6 +36,7 @@ export default function Page() {
       return;
     }
 
+    ringtone.currentTime = 0;
     ringtone.play();
     ringtone.pause();
 
