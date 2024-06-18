@@ -36,10 +36,12 @@ export default function Page() {
       return;
     }
 
+    ringtone.pause();
+    ringtone.play();
+
     const delay: number = calculateDelay(h, m);
     const timeoutID: number = window.setTimeout(() => {
       goOff(ringtone);
-      alert('TEST')
     }, delay);
 
     setAlarm({
