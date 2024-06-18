@@ -41,6 +41,8 @@ export default function Page() {
       goOff(ringtone);
     }, delay);
 
+    goOff(ringtone);
+
     setAlarm({
       h,
       m,
