@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ChangeEvent } from 'react';
+import { useState, useRef, ChangeEvent, MutableRefObject } from 'react';
 import Number from '@/components/Number';
 
 interface Clock {
@@ -19,6 +19,12 @@ export default function Page() {
   const [m, setM] = useState<number>(now.getMinutes());
   const [ringtone, setRingtone] = useState<HTMLAudioElement | null>(null);
   const [alarm, setAlarm] = useState<Alarm | null>(null);
+  const inputRef: MutableRefObject<HTMLInputElement | null> =
+    useRef<HTMLInputElement | null>(null);
+
+  function chooseFile(): void {
+    inputRef.current?.click();
+  }
 
   function upload(e: ChangeEvent<HTMLInputElement>): void {
     if (e.target.files) {
@@ -96,7 +102,7 @@ export default function Page() {
   return (
     <>
       <main className='absolute left-0 top-0 flex min-h-screen w-screen flex-col items-center'>
-        <h1 className='pb-8 pt-4 text-3xl font-bold'>MP3 Alarm Clock</h1>
+        <h1 className='my-8 text-3xl font-bold'>MP3 Alarm Clock</h1>
 
         <section className='flex w-screen flex-col items-center'>
           <section className='flex text-3xl font-bold'>
@@ -120,21 +126,34 @@ export default function Page() {
             />
           </section>
 
-          <section className='w-60 py-8'>
-            <label htmlFor='file'>Ringtone:</label>
+          <section className='my-8 w-60 font-bold'>
+            <h2>Ringtone:</h2>
+            <div className='text-emerald-500'>
+              {inputRef.current?.files?.[0].name ?? ''}
+            </div>
+            <button
+              className='text-sky-500'
+              onClick={() => {
+                chooseFile();
+              }}
+            >
+              upload
+            </button>
             <input
-              className='mt-2 w-full'
+              className='mt-2 hidden w-full'
+              ref={inputRef}
               type='file'
-              name='file'
-              accept='audio/mp3'
+              accept='.mp3'
               onChange={upload}
             />
           </section>
 
           {!alarm && (
             <button
-              className='mb-8 rounded-lg bg-emerald-500 px-8 py-1 font-bold text-white'
-              onClick={save}
+              className='rounded-lg bg-emerald-500 px-8 py-1 font-bold text-white'
+              onClick={() => {
+                save();
+              }}
             >
               Save
             </button>
