@@ -128,20 +128,22 @@ export default function Page() {
             />
           </section>
 
-          <section className='my-8 w-60 overflow-hidden text-lg'>
+          <section className='relative my-8 h-8 w-60 overflow-hidden text-lg'>
             <button
-              className='text-sky-500'
+              className='absolute left-0 top-0 z-10 h-8 w-8 bg-white'
               onClick={() => {
                 chooseFile();
               }}
             >
               ➕
             </button>
+
             {ringtone && (
-              <div className='animate-move w-fit whitespace-nowrap text-emerald-500'>
+              <div className='absolute h-full w-fit animate-move whitespace-nowrap text-emerald-500'>
                 {inputRef.current?.files?.[0].name ?? ''}
               </div>
             )}
+
             <input
               className='mt-2 hidden w-full'
               ref={inputRef}

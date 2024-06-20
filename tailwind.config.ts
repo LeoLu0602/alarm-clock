@@ -16,10 +16,10 @@ const config: Config = {
       keyframes: {
         move: {
           '0%': {
-            transform: 'translateX(100%)',
+            left: '240px',
           },
           '100%': {
-            transform: 'translateX(-100%)',
+            left: 'calc(-100% + 32px)',
           },
         },
       },
