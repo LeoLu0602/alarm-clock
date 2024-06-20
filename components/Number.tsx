@@ -10,7 +10,7 @@ export default function Number({
   decrement: () => void;
 }) {
   return (
-    <section className='flex w-20 flex-col items-center'>
+    <section className='flex w-24 flex-col items-center'>
       <button
         className='w-full'
         onClick={() => {

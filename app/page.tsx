@@ -102,10 +102,12 @@ export default function Page() {
   return (
     <>
       <main className='absolute left-0 top-0 flex min-h-screen w-screen flex-col items-center'>
-        <h1 className='my-8 text-3xl font-bold'>MP3 Alarm Clock</h1>
+        <h1 className='my-8 text-2xl font-bold text-zinc-600'>
+          MP3 Alarm Clock
+        </h1>
 
         <section className='flex w-screen flex-col items-center'>
-          <section className='flex text-3xl font-bold'>
+          <section className='flex text-5xl text-zinc-600'>
             <Number
               num={h}
               increment={() => {
@@ -126,19 +128,20 @@ export default function Page() {
             />
           </section>
 
-          <section className='my-8 w-60 font-bold'>
-            <h2>Ringtone:</h2>
-            <div className='text-emerald-500'>
-              {inputRef.current?.files?.[0].name ?? ''}
-            </div>
+          <section className='my-8 w-60 overflow-hidden text-lg'>
             <button
               className='text-sky-500'
               onClick={() => {
                 chooseFile();
               }}
             >
-              upload
+              ➕
             </button>
+            {ringtone && (
+              <div className='animate-move w-fit whitespace-nowrap text-emerald-500'>
+                {inputRef.current?.files?.[0].name ?? ''}
+              </div>
+            )}
             <input
               className='mt-2 hidden w-full'
               ref={inputRef}
@@ -161,9 +164,9 @@ export default function Page() {
         </section>
 
         {alarm && (
-          <section className='flex w-32 justify-between'>
+          <section className='flex w-full items-center justify-center gap-8 text-2xl'>
             <h3>
-              {alarm.h.toString().padStart(2, '0')}:
+              ⏰ {alarm.h.toString().padStart(2, '0')}:
               {alarm.m.toString().padStart(2, '0')}
             </h3>
             <span
